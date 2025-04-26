@@ -13,11 +13,6 @@ export class NotificacaoController {
 
   constructor(private readonly notificacaoService: NotificacaoService) {}
 
-  /**
-   * Retorna todas as notificações de um cliente específico
-   * @param clienteId ID do cliente
-   * @returns Lista de notificações do cliente
-   */
   @Get('cliente/:clienteId')
   @ApiOperation({
     summary: 'Listar notificações por cliente',

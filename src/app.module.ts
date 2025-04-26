@@ -12,12 +12,13 @@ import rabbitmqConfig from './config/rabbitmq.config';
 import databaseConfig from './config/database.config';
 import { VendaModule } from './modules/vendas/venda.module';
 import { NotificacaoModule } from './modules/notificacoes/notificacao.module';
+import sendgridConfig from './config/sendgrid.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, rabbitmqConfig],
+      load: [databaseConfig, rabbitmqConfig, sendgridConfig],
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({

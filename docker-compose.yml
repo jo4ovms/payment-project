@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: vendas-api-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vendas_api
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vendas-api-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: vendas-api-rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - vendas-api-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vendas-api-nestjs
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=vendas_api
+      - DB_SYNC=true
+      - DB_LOGGING=false
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - NODE_ENV=development
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+    networks:
+      - vendas-api-network
+    volumes:
+      - ./:/app
+      - /app/node_modules
+
+networks:
+  vendas-api-network:
+    name: vendas-api-network
+    driver: bridge
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

@@ -14,11 +14,11 @@ Esta é uma API RESTful desenvolvida com NestJS, TypeScript, TypeORM e PostgreSQ
 
 - Node.js (v16+)
 - npm ou yarn
-- Docker e Docker Compose (opcional, para execução em containers)
+- Docker e Docker Compose
 
 ## Instalação e Execução
 
-### Com Docker (recomendado)
+### Com Docker
 
 1. Clone o repositório
 2. Execute os containers com Docker Compose:
@@ -47,64 +47,6 @@ npm install
 ```bash
 npm run start:dev
 ```
-
-## Estrutura do Projeto
-
-```
-src/
-├── app.module.ts                  # Módulo principal da aplicação
-├── main.ts                        # Ponto de entrada da aplicação
-├── config/                        # Configurações da aplicação
-├── common/                        # Componentes comuns e compartilhados
-├── modules/                       # Módulos da aplicação
-│   ├── clientes/                  # Módulo de Clientes
-│   ├── produtos/                  # Módulo de Produtos
-│   ├── condpagto/                 # Módulo de Condições de Pagamento
-│   ├── precos/                    # Módulo de Preços
-│   └── relatorios/                # Módulo de Relatórios
-└── messaging/                     # Configuração e serviços do RabbitMQ
-```
-
-## Endpoints da API
-
-### Clientes
-
-- `POST /api/clientes`: Criar cliente
-- `GET /api/clientes`: Listar clientes
-- `GET /api/clientes/:id`: Obter cliente por ID
-- `PUT /api/clientes/:id`: Atualizar cliente
-- `DELETE /api/clientes/:id`: Remover cliente
-
-### Produtos
-
-- `POST /api/produtos`: Criar produto
-- `GET /api/produtos`: Listar produtos
-- `GET /api/produtos/:id`: Obter produto por ID
-- `PUT /api/produtos/:id`: Atualizar produto
-- `DELETE /api/produtos/:id`: Remover produto
-
-### Condições de Pagamento
-
-- `POST /api/condpagto`: Criar condição de pagamento
-- `GET /api/condpagto`: Listar condições de pagamento
-- `GET /api/condpagto/:id`: Obter condição de pagamento por ID
-- `PUT /api/condpagto/:id`: Atualizar condição de pagamento
-- `DELETE /api/condpagto/:id`: Remover condição de pagamento
-- `PATCH /api/condpagto/:condPagtoId/vincular-cliente/:clienteId`: Vincular cliente
-- `PATCH /api/condpagto/:condPagtoId/desvincular-cliente/:clienteId`: Desvincular cliente
-
-### Preços
-
-- `POST /api/precos`: Criar preço
-- `GET /api/precos`: Listar preços
-- `GET /api/precos/:id`: Obter preço por ID
-- `GET /api/precos/:clienteId/:produtoId`: Obter preço por cliente e produto
-- `PUT /api/precos/:id`: Atualizar preço
-- `DELETE /api/precos/:id`: Remover preço
-
-### Relatórios
-
-- `GET /api/relatorio/vendas/:cnpjOuRazaoSocial`: Gerar relatório de vendas por cliente
 
 ## Tecnologias Utilizadas
 

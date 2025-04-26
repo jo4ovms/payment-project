@@ -1,99 +1,117 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API RESTful de Vendas com NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta é uma API RESTful desenvolvida com NestJS, TypeScript, TypeORM e PostgreSQL para gerenciar clientes, produtos, condições de pagamento e preços.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Funcionalidades
 
-## Description
+- CRUD completo para Clientes, Produtos, Condições de Pagamento e Preços
+- Relacionamentos entre entidades
+- Notificações assíncronas via RabbitMQ
+- Relatórios de vendas por cliente
+- Documentação Swagger
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Pré-requisitos
 
-## Project setup
+- Node.js (v16+)
+- npm ou yarn
+- Docker e Docker Compose (opcional, para execução em containers)
+
+## Instalação e Execução
+
+### Com Docker (recomendado)
+
+1. Clone o repositório
+2. Execute os containers com Docker Compose:
 
 ```bash
-$ npm install
+docker-compose up -d
 ```
 
-## Compile and run the project
+A API estará disponível em: http://localhost:3000/api  
+Swagger: http://localhost:3000/api/docs  
+RabbitMQ Management: http://localhost:15672 (usuário: guest, senha: guest)
+
+### Sem Docker
+
+1. Clone o repositório
+2. Instale as dependências:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+3. Certifique-se de ter um servidor PostgreSQL e RabbitMQ em execução
+4. Configure o arquivo `.env` com as credenciais corretas
+5. Execute a aplicação:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+## Estrutura do Projeto
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+```
+src/
+├── app.module.ts                  # Módulo principal da aplicação
+├── main.ts                        # Ponto de entrada da aplicação
+├── config/                        # Configurações da aplicação
+├── common/                        # Componentes comuns e compartilhados
+├── modules/                       # Módulos da aplicação
+│   ├── clientes/                  # Módulo de Clientes
+│   ├── produtos/                  # Módulo de Produtos
+│   ├── condpagto/                 # Módulo de Condições de Pagamento
+│   ├── precos/                    # Módulo de Preços
+│   └── relatorios/                # Módulo de Relatórios
+└── messaging/                     # Configuração e serviços do RabbitMQ
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Endpoints da API
 
-## Resources
+### Clientes
 
-Check out a few resources that may come in handy when working with NestJS:
+- `POST /api/clientes`: Criar cliente
+- `GET /api/clientes`: Listar clientes
+- `GET /api/clientes/:id`: Obter cliente por ID
+- `PUT /api/clientes/:id`: Atualizar cliente
+- `DELETE /api/clientes/:id`: Remover cliente
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Produtos
 
-## Support
+- `POST /api/produtos`: Criar produto
+- `GET /api/produtos`: Listar produtos
+- `GET /api/produtos/:id`: Obter produto por ID
+- `PUT /api/produtos/:id`: Atualizar produto
+- `DELETE /api/produtos/:id`: Remover produto
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Condições de Pagamento
 
-## Stay in touch
+- `POST /api/condpagto`: Criar condição de pagamento
+- `GET /api/condpagto`: Listar condições de pagamento
+- `GET /api/condpagto/:id`: Obter condição de pagamento por ID
+- `PUT /api/condpagto/:id`: Atualizar condição de pagamento
+- `DELETE /api/condpagto/:id`: Remover condição de pagamento
+- `PATCH /api/condpagto/:condPagtoId/vincular-cliente/:clienteId`: Vincular cliente
+- `PATCH /api/condpagto/:condPagtoId/desvincular-cliente/:clienteId`: Desvincular cliente
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Preços
 
-## License
+- `POST /api/precos`: Criar preço
+- `GET /api/precos`: Listar preços
+- `GET /api/precos/:id`: Obter preço por ID
+- `GET /api/precos/:clienteId/:produtoId`: Obter preço por cliente e produto
+- `PUT /api/precos/:id`: Atualizar preço
+- `DELETE /api/precos/:id`: Remover preço
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Relatórios
+
+- `GET /api/relatorio/vendas/:cnpjOuRazaoSocial`: Gerar relatório de vendas por cliente
+
+## Tecnologias Utilizadas
+
+- NestJS: Framework para construção de aplicações Node.js
+- TypeScript: Superset tipado de JavaScript
+- TypeORM: ORM para interação com o banco de dados
+- PostgreSQL: Banco de dados relacional
+- RabbitMQ: Sistema de mensageria para notificações assíncronas
+- Swagger: Documentação da API
+- Docker & Docker Compose: Containerização da aplicação

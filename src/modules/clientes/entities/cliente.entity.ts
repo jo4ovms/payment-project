@@ -10,6 +10,9 @@ export class Cliente {
   cnpj: string;
 
   @Column({ length: 255 })
+  email: string;
+
+  @Column({ length: 255 })
   razaosocial: string;
 
   @OneToMany(() => Preco, (preco) => preco.cliente)

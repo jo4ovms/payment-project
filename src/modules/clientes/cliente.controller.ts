@@ -65,6 +65,7 @@ export class ClienteController {
   })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 404, description: 'Cliente não encontrado' })
+  @ApiResponse({ status: 400, description: 'E-mail inválido' })
   @ApiResponse({ status: 409, description: 'CNPJ já cadastrado para outro cliente' })
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateClienteDto: UpdateClienteDto) {
     return await this.clienteService.update(id, updateClienteDto);

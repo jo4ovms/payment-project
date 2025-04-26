@@ -9,7 +9,7 @@ import { ClienteModule } from '../clientes/cliente.module';
 import { EmailService } from './email.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Notificacao]), RabbitMQModule],
+  imports: [TypeOrmModule.forFeature([Notificacao]), RabbitMQModule, ClienteModule],
   providers: [NotificacaoService, NotificacaoRepository, EmailService],
   controllers: [NotificacaoController],
   exports: [NotificacaoService],

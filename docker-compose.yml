@@ -14,6 +14,18 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - vendas-api-network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: vendas-api-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    networks:
+      - vendas-api-network
+    depends_on:
+      - postgres
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -41,16 +53,8 @@ services:
     container_name: vendas-api-nestjs
     ports:
       - '3000:3000'
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=vendas_api
-      - DB_SYNC=true
-      - DB_LOGGING=false
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-      - NODE_ENV=development
+    env_file:
+      - .env
     depends_on:
       rabbitmq:
         condition: service_healthy

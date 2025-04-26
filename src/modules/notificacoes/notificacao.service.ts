@@ -19,7 +19,6 @@ interface PrecoNotification {
 @Injectable()
 export class NotificacaoService implements OnModuleInit {
   private readonly logger = new Logger(NotificacaoService.name);
-  private sendgridConfigured: boolean;
 
   constructor(
     private readonly rabbitMQService: RabbitMQService,
@@ -113,14 +112,6 @@ export class NotificacaoService implements OnModuleInit {
       this.logger.log(
         `Enviando email para cliente ${notification.clienteRazaoSocial} sobre atualização de preço do produto ${notification.produtoDescricao}`,
       );
-
-      if (!this.sendgridConfigured) {
-        this.logger.warn('SendGrid não está configurado. Simulando envio de email.');
-        this.logger.log(
-          `[SIMULAÇÃO] E-mail enviado para cliente ${notification.clienteRazaoSocial} sobre atualização de preço do produto ${notification.produtoDescricao} de R$ ${notification.precoAntigo} para R$ ${notification.precoNovo}`,
-        );
-        return;
-      }
 
       const emailCliente = await this.obterEmailCliente(notification.clienteId);
 

@@ -13,9 +13,10 @@ import {
 } from '@nestjs/common';
 import { PrecoService } from './preco.service';
 import { CreatePrecoDto } from './dto/create-preco.dto';
-import { UpdatePrecoDto } from './dto/update-preco.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { UpdatePrecoDto } from './dto/update-preco.dto';
+import { UpdatePrecoProdutoDto } from './dto/update-preco-produto.dto';
 
 @ApiTags('precos')
 @Controller('precos')
@@ -99,5 +100,21 @@ export class PrecoController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.precoService.remove(id);
+  }
+
+  @Put('produto/:produtoId')
+  @ApiOperation({ summary: 'Atualizar preço de um produto para todos os clientes' })
+  @ApiParam({ name: 'produtoId', description: 'ID do produto' })
+  @ApiResponse({
+    status: 200,
+    description: 'Preços atualizados com sucesso',
+  })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({ status: 404, description: 'Produto não encontrado' })
+  async updatePrecoProduto(
+    @Param('produtoId', ParseIntPipe) produtoId: number,
+    @Body() updatePrecoProdutoDto: UpdatePrecoProdutoDto,
+  ) {
+    return await this.precoService.updatePrecoProduto(produtoId, updatePrecoProdutoDto);
   }
 }

@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrecoRepository } from './preco.repository';
 import { CreatePrecoDto } from './dto/create-preco.dto';
-import { UpdatePrecoDto } from './dto/update-preco.dto';
 import { Preco } from './entities/preco.entity';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { ClienteService } from '../clientes/cliente.service';
 import { ProdutoService } from '../produtos/produto.service';
 import { NotificacaoService } from '../notificacoes/notificacao.service';
+import { UpdatePrecoDto } from './dto/update-preco.dto';
+import { UpdatePrecoProdutoDto } from './dto/update-preco-produto.dto';
 
 @Injectable()
 export class PrecoService {
@@ -77,6 +78,69 @@ export class PrecoService {
     }
 
     return await this.precoRepository.update(id, updatePrecoDto);
+  }
+
+  async updatePrecoProduto(
+    produtoId: number,
+    updatePrecoProdutoDto: UpdatePrecoProdutoDto,
+  ): Promise<{ atualizados: number; notificados: number }> {
+    await this.produtoService.findById(produtoId);
+
+    const dataInicio = updatePrecoProdutoDto.dataInicio || new Date();
+    const dataAtual = new Date();
+
+    const precosVigentes = await this.precoRepository.findPrecosByProdutoVigentes(produtoId);
+
+    let atualizados = 0;
+    let notificados = 0;
+    const clientesProcessados = new Set<number>();
+
+    for (const precoAtual of precosVigentes) {
+      if (clientesProcessados.has(precoAtual.clienteId)) {
+        continue;
+      }
+
+      clientesProcessados.add(precoAtual.clienteId);
+
+      if (!updatePrecoProdutoDto.dataFim) {
+        await this.precoRepository.update(precoAtual.id, {
+          dataFim: dataAtual,
+        });
+      } else {
+        await this.precoRepository.update(precoAtual.id, {
+          dataFim: updatePrecoProdutoDto.dataFim,
+        });
+      }
+
+      await this.precoRepository.create({
+        clienteId: precoAtual.clienteId,
+        produtoId: precoAtual.produtoId,
+        valor: updatePrecoProdutoDto.valor,
+        dataInicio: dataInicio,
+        dataFim: null,
+      });
+
+      atualizados++;
+
+      if (updatePrecoProdutoDto.valor < precoAtual.valor) {
+        const cliente = await this.clienteService.findById(precoAtual.clienteId);
+        const produto = await this.produtoService.findById(precoAtual.produtoId);
+
+        await this.notificacaoService.notifyPrecoUpdate({
+          clienteId: cliente.id,
+          clienteRazaoSocial: cliente.razaosocial,
+          produtoId: produto.id,
+          produtoDescricao: produto.descricao,
+          precoAntigo: precoAtual.valor,
+          precoNovo: updatePrecoProdutoDto.valor,
+          dataAtualizacao: dataAtual,
+        });
+
+        notificados++;
+      }
+    }
+
+    return { atualizados, notificados };
   }
 
   async remove(id: number): Promise<void> {

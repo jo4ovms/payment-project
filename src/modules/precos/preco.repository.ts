@@ -63,6 +63,44 @@ export class PrecoRepository implements IRepository<Preco> {
     });
   }
 
+  async findPrecosByProdutoVigentes(produtoId: number): Promise<Preco[]> {
+    const currentDate = new Date();
+
+    const clientesComPrecos = await this.repository
+      .createQueryBuilder('preco')
+      .select('DISTINCT preco.clienteId', 'clienteId')
+      .where('preco.produtoId = :produtoId', { produtoId })
+      .getRawMany();
+
+    const resultado: Preco[] = [];
+
+    for (const cliente of clientesComPrecos) {
+      const precoVigente = await this.repository.findOne({
+        where: [
+          {
+            produtoId,
+            clienteId: cliente.clienteId,
+            dataInicio: LessThanOrEqual(currentDate),
+            dataFim: IsNull(),
+          },
+          {
+            produtoId,
+            clienteId: cliente.clienteId,
+            dataInicio: LessThanOrEqual(currentDate),
+            dataFim: MoreThanOrEqual(currentDate),
+          },
+        ],
+        order: { dataInicio: 'DESC' },
+      });
+
+      if (precoVigente) {
+        resultado.push(precoVigente);
+      }
+    }
+
+    return resultado;
+  }
+
   async getPrecoAnterior(clienteId: number, produtoId: number, dataAtual: Date): Promise<Preco | null> {
     return await this.repository.findOne({
       where: {

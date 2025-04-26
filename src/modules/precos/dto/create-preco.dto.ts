@@ -15,7 +15,7 @@ export class CreatePrecoDto {
 
   @ApiProperty({
     description: 'Data de início da vigência do preço',
-    example: '2023-01-01',
+    example: '2025-01-01',
   })
   @IsNotEmpty({ message: 'Data de início é obrigatória' })
   @IsDateString({}, { message: 'Data de início deve ser uma data válida' })
@@ -23,7 +23,7 @@ export class CreatePrecoDto {
 
   @ApiProperty({
     description: 'Data de fim da vigência do preço',
-    example: '2023-12-31',
+    example: '2025-12-31',
     required: false,
   })
   @IsOptional()

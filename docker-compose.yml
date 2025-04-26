@@ -62,9 +62,10 @@ services:
         condition: service_started
     networks:
       - vendas-api-network
-    volumes:
-      - ./:/app
-      - /app/node_modules
+    volumes:  
+      - /app/node_modules  
+      - ./src:/app/src    
+      - ./crypto-fix.js:/app/crypto-fix.js
 
 networks:
   vendas-api-network:

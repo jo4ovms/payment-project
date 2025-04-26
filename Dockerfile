@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD ["node", "-r", "./crypto-fix.js", "dist/main.js"]
+CMD ["node", "-r", "/app/crypto-fix.js", "/app/dist/main.js"]
